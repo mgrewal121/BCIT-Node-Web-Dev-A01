@@ -28,3 +28,7 @@ Specific Prompts/Questions Asked:
 5. "I'm getting a 404 for my CSS file even though it exists at public/css/styles.css"
    - Helped debug the file structure issue (styles was a folder, not a file)
    - I adjusted accordingly!
+
+6. "Help generate a short README for this assignment (Excluding Notes/Assumptions)"
+   - Used the README that it Generated
+   - Added Notes/Assumptions
