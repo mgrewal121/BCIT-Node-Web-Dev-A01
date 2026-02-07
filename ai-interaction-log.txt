@@ -1,0 +1,30 @@
+AI Interaction Log - Node A01 Portfolio Launchpad Assignment
+
+AI Tool Used: ChatGPT
+Dates AI was used: February 6, 2026 - February 7, 2026
+
+Purpose of AI Usage:
+- Generating boilerplate code for Express routes and frontend JavaScript
+- Debugging syntax and path errors
+- Understanding Express middleware concepts and ordering
+- Code generation filtering and rendering functions
+
+Specific Prompts/Questions Asked:
+1. "Walk me through setting up an Express server with routers for pages and API endpoints"
+   - Walked me through initial server.js structure with middleware setup
+   - Provided templates for pages.routes.js and api.routes.js
+   - I adapted/modified the code to match assignment requirements and focused on learning how this all works!
+   
+2. "How do I filter projects by status and implement a search query that checks title, tags, and stack?"
+   - Generated filter logic using .filter() and .some() methods
+   - Provided the search implementation for /api/projects?q=query
+   - I integrated this into my API routes. Left as is.
+   
+3. "Create a function to fetch and render project cards dynamically on the frontend"
+   - Generated loadProjects() and renderProjects() functions
+   - Provided template literals for creating project card HTML
+   - I integrated this into my projects.js. Left as is.
+
+5. "I'm getting a 404 for my CSS file even though it exists at public/css/styles.css"
+   - Helped debug the file structure issue (styles was a folder, not a file)
+   - I adjusted accordingly!
