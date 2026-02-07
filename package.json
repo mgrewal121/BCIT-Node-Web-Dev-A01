@@ -1,0 +1,25 @@
+{
+  "name": "node2know-portfolio-starter",
+  "version": "1.0.0",
+  "description": "**Node & Express + Hybrid Pages + Projects API + Client Render**  \r (Starter UI + Starter Data)",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProfessorSolo/node2know-portfolio-starter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ProfessorSolo/node2know-portfolio-starter/issues"
+  },
+  "homepage": "https://github.com/ProfessorSolo/node2know-portfolio-starter#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "morgan": "^1.10.1"
+  }
+}
