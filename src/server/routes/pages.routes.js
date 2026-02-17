@@ -1,24 +1,71 @@
 const express = require('express');
-const path = require('path');
 const router = express.Router();
+const projectsRepo = require('../lib/projects.repository');
 
-const pagesDir = path.join(__dirname, '../../pages');
+// Used Claude to help me not use path field
 
 // Page routes
 router.get('/', (req, res) => {
-  res.sendFile(path.join(pagesDir, 'index.html'));
+  res.render('index', {
+    title: 'Home',
+    layout: 'layouts/layout-full'
+  });
 });
 
 router.get('/about', (req, res) => {
-  res.sendFile(path.join(pagesDir, 'about.html'));
+  res.render('about', {
+    title: 'About',
+    layout: 'layouts/layout-full'
+  });
 });
 
 router.get('/projects', (req, res) => {
-  res.sendFile(path.join(pagesDir, 'projects.html'));
+  try {
+    const searchTerm = req.query.q || '';
+    const projects = projectsRepo.getActiveProjects(searchTerm);
+
+    res.render('projects', {
+      title: 'Projects',
+      layout: 'layouts/layout-full',
+      projects,
+      searchTerm
+    });
+  } catch (error) {
+    console.error('Error loading projects:', error);
+    res.status(500).send('Error loading projects');
+  }
+});
+
+router.get('/projects/:slug', (req, res) => {
+  try {
+    const project = projectsRepo.getProjectBySlug(req.params.slug);
+
+    if (!project) {
+      return res.status(404).render('404', {
+        title: '404 - Not Found',
+        layout: 'layouts/layout-full'
+      });
+    }
+
+    const otherProjects = projectsRepo.getOtherActiveProjects(req.params.slug);
+
+    res.render('project-details', {
+      title: project.title,
+      layout: 'layouts/layout-sidebar',
+      project,
+      otherProjects
+    });
+  } catch (error) {
+    console.error('Error loading project:', error);
+    res.status(500).send('Error loading project');
+  }
 });
 
 router.get('/contact', (req, res) => {
-  res.sendFile(path.join(pagesDir, 'contact.html'));
+  res.render('contact', {
+    title: 'Contact',
+    layout: 'layouts/layout-full'
+  });
 });
 
 // Submission route for contact form
@@ -27,18 +74,20 @@ router.post('/contact', (req, res) => {
 
   // Validation
   if (!name || !email || !message) {
-    return res.status(400).json({
-      success: false,
-      message: 'Please provide name, email, and message.'
+    return res.render('contact', {
+      title: 'Contact',
+      layout: 'layouts/layout-full',
+      error: 'Please provide name, email, and message.'
     });
   }
 
   console.log('Contact form submission:', { name, email, message });
 
   // Success!
-  res.status(200).json({
-    success: true,
-    message: `Thank you, ${name}! We have received your message.`
+  res.render('contact-success', {
+    title: 'Message Sent',
+    layout: 'layouts/layout-full',
+    name
   });
 });
 

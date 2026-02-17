@@ -9,6 +9,9 @@ const apiRouter = require('./src/server/routes/api.routes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Middleware
 app.use(morgan('dev'));
 // Gets static files from the public folder
@@ -27,7 +30,10 @@ app.use((req, res) => {
   if (req.path.startsWith('/api')) {
     res.status(404).json({ error: 'Not found' });
   } else {
-    res.status(404).send('404 - Page Not Found');
+    res.status(404).render('404', {
+      title: '404 - Not Found',
+      layout: 'layouts/layout-full'
+    });
   }
 });
 
