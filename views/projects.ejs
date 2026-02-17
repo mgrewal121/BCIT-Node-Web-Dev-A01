@@ -1,0 +1,30 @@
+<h1>Projects</h1>
+
+<div class="search-container">
+    <form action="/projects" method="GET">
+        <input 
+            type="text" 
+            name="q" 
+            placeholder="Search projects..." 
+            value="<%= searchTerm %>"
+        >
+        <button type="submit" class="btn">Search</button>
+    </form>
+</div>
+
+<% if (searchTerm) { %>
+    <p class="search-results">
+        Showing results for "<%= searchTerm %>" (<%= projects.length %> found)
+        <a href="/projects">Clear search</a>
+    </p>
+<% } %>
+
+<% if (projects.length > 0) { %>
+    <div class="projects-grid">
+        <% projects.forEach(project => { %>
+            <%- include('partials/project-card', { project }) %>
+        <% }); %>
+    </div>
+<% } else { %>
+    <p>No projects found<% if (searchTerm) { %> matching "<%= searchTerm %>"<% } %>.</p>
+<% } %>

@@ -1,0 +1,40 @@
+<article class="project-detail">
+    <h1><%= project.title %></h1>
+    <p class="tagline"><%= project.tagline %></p>
+    
+    <div class="project-images">
+        <% project.images.forEach(image => { %>
+            <img src="<%= image.path %>" alt="<%= image.alt %>" class="project-screenshot">
+        <% }); %>
+    </div>
+    
+    <section class="project-description">
+        <h2>About This Project</h2>
+        <p><%= project.description %></p>
+    </section>
+    
+    <section class="project-tech">
+        <h3>Technologies Used</h3>
+        <div class="stack">
+            <% project.stack.forEach(tech => { %>
+                <span class="badge"><%= tech %></span>
+            <% }); %>
+        </div>
+    </section>
+    
+    <section class="project-tags">
+        <h3>Tags</h3>
+        <div class="tags">
+            <% project.tags.forEach(tag => { %>
+                <span class="tag"><%= tag %></span>
+            <% }); %>
+        </div>
+    </section>
+    
+    <section class="project-dates">
+        <p><strong>Created:</strong> <%= new Date(project.dates.created).toLocaleDateString() %></p>
+        <p><strong>Last Updated:</strong> <%= new Date(project.dates.updated).toLocaleDateString() %></p>
+    </section>
+    
+    <a href="/projects" class="btn">← Back to Projects</a>
+</article>

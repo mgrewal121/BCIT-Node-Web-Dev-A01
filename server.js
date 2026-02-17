@@ -8,9 +8,13 @@ const apiRouter = require('./src/server/routes/api.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const expressLayouts = require('express-ejs-layouts');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+app.use(expressLayouts);
+app.set('layout', 'layouts/layout-full'); // Default layout for all views
 
 // Middleware
 app.use(morgan('dev'));

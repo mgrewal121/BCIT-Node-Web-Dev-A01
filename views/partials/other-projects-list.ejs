@@ -1,0 +1,17 @@
+<div class="other-projects">
+    <h3>Other Projects</h3>
+    <% if (otherProjects && otherProjects.length > 0) { %>
+        <ul>
+            <% otherProjects.forEach(project => { %>
+                <li>
+                    <a href="/projects/<%= project.slug %>">
+                        <strong><%= project.title %></strong>
+                        <p><%= project.tagline %></p>
+                    </a>
+                </li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No other projects available.</p>
+    <% } %>
+</div>

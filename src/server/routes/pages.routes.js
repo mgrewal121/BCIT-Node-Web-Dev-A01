@@ -2,31 +2,40 @@ const express = require('express');
 const router = express.Router();
 const projectsRepo = require('../lib/projects.repository');
 
-// Used Claude to help me not use path field
-
-// Page routes
+/**
+ * GET /
+ * Home page
+ */
 router.get('/', (req, res) => {
+  res.locals.layout = 'layouts/layout-full';
   res.render('index', {
-    title: 'Home',
-    layout: 'layouts/layout-full'
+    title: 'Home'
   });
 });
 
+/**
+ * GET /about
+ * About page
+ */
 router.get('/about', (req, res) => {
+  res.locals.layout = 'layouts/layout-full';
   res.render('about', {
-    title: 'About',
-    layout: 'layouts/layout-full'
+    title: 'About'
   });
 });
 
+/**
+ * GET /projects
+ * Projects listing page with optional search
+ */
 router.get('/projects', (req, res) => {
   try {
     const searchTerm = req.query.q || '';
     const projects = projectsRepo.getActiveProjects(searchTerm);
 
+    res.locals.layout = 'layouts/layout-full';
     res.render('projects', {
       title: 'Projects',
-      layout: 'layouts/layout-full',
       projects,
       searchTerm
     });
@@ -36,22 +45,26 @@ router.get('/projects', (req, res) => {
   }
 });
 
+/**
+ * GET /projects/:slug
+ * Individual project detail page with sidebar
+ */
 router.get('/projects/:slug', (req, res) => {
   try {
     const project = projectsRepo.getProjectBySlug(req.params.slug);
 
     if (!project) {
+      res.locals.layout = 'layouts/layout-full';
       return res.status(404).render('404', {
-        title: '404 - Not Found',
-        layout: 'layouts/layout-full'
+        title: '404 - Not Found'
       });
     }
 
     const otherProjects = projectsRepo.getOtherActiveProjects(req.params.slug);
 
+    res.locals.layout = 'layouts/layout-sidebar';
     res.render('project-details', {
       title: project.title,
-      layout: 'layouts/layout-sidebar',
       project,
       otherProjects
     });
@@ -61,32 +74,40 @@ router.get('/projects/:slug', (req, res) => {
   }
 });
 
+/**
+ * GET /contact
+ * Contact form page
+ */
 router.get('/contact', (req, res) => {
+  res.locals.layout = 'layouts/layout-full';
   res.render('contact', {
-    title: 'Contact',
-    layout: 'layouts/layout-full'
+    title: 'Contact'
   });
 });
 
-// Submission route for contact form
+/**
+ * POST /contact
+ * Handle contact form submission
+ */
 router.post('/contact', (req, res) => {
   const { name, email, message } = req.body;
 
   // Validation
   if (!name || !email || !message) {
+    res.locals.layout = 'layouts/layout-full';
     return res.render('contact', {
       title: 'Contact',
-      layout: 'layouts/layout-full',
       error: 'Please provide name, email, and message.'
     });
   }
 
+  // Log the submission (in production, you'd send email or save to DB)
   console.log('Contact form submission:', { name, email, message });
 
-  // Success!
+  // Render success page
+  res.locals.layout = 'layouts/layout-full';
   res.render('contact-success', {
     title: 'Message Sent',
-    layout: 'layouts/layout-full',
     name
   });
 });

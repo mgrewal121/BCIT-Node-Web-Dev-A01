@@ -1,0 +1,19 @@
+<article class="project-card">
+    <% const coverImage = project.images.find(img => img.type === 'cover'); %>
+    <% if (coverImage) { %>
+        <img src="<%= coverImage.path %>" alt="<%= coverImage.alt %>" class="project-image">
+    <% } %>
+    
+    <div class="project-info">
+        <h3><%= project.title %></h3>
+        <p class="tagline"><%= project.tagline %></p>
+        
+        <div class="stack">
+            <% project.stack.forEach(tech => { %>
+                <span class="badge"><%= tech %></span>
+            <% }); %>
+        </div>
+        
+        <a href="/projects/<%= project.slug %>" class="btn">View Project</a>
+    </div>
+</article>
