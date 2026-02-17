@@ -1,34 +1,32 @@
-AI Interaction Log - Node A01 Portfolio Launchpad Assignment
+AI Interaction Log - Node A02 Refactor Assignment
 
-AI Tool Used: ChatGPT
-Dates AI was used: February 6, 2026 - February 7, 2026
+AI Tool Used: Claude
+Dates AI was used: February 17, 2026
 
 Purpose of AI Usage:
-- Generating boilerplate code for Express routes and frontend JavaScript
-- Debugging syntax and path errors
-- Understanding Express middleware concepts and ordering
-- Code generation filtering and rendering functions
+- Help to create project repository
+- Help to understand and guide on how to use EJS
+- Helped updating and refactoring styling pages
 
 Specific Prompts/Questions Asked:
-1. "Walk me through setting up an Express server with routers for pages and API endpoints"
-   - Walked me through initial server.js structure with middleware setup
-   - Provided templates for pages.routes.js and api.routes.js
-   - I adapted/modified the code to match assignment requirements and focused on learning how this all works!
+1. "Create me a project repository for this assignment based off of what I have here."
+   - Attached assignment 1 documents.
+   - Created the project.repository.js class.
+   - Walked me through what it does to help me understand its purpose
+   - Helped me link it throughout the project
    
-2. "How do I filter projects by status and implement a search query that checks title, tags, and stack?"
-   - Generated filter logic using .filter() and .some() methods
-   - Provided the search implementation for /api/projects?q=query
-   - I integrated this into my API routes. Left as is.
+2. "I have minimal experience with EJS. In regards to assignment how should I use EJS. Please guide me through
+   the process."
+   - Showed assignment 2 requirements for view engine.
+   - Helped me setup EJS.
+   - Worked alongside me through code to create EJS. I modified or adjusted accordingly if I went off track.
    
-3. "Create a function to fetch and render project cards dynamically on the frontend"
-   - Generated loadProjects() and renderProjects() functions
-   - Provided template literals for creating project card HTML
-   - I integrated this into my projects.js. Left as is.
+3. "Here is my styles.css. I would like to update and refactor it according to the EJS files I have now added. Can
+   you do that for me?"
+   - Showed my styles.css
+   - Refactored styles.css while keeping my original code.
+   - After it refactored I left it as is as I was satisfied.
 
-5. "I'm getting a 404 for my CSS file even though it exists at public/css/styles.css"
-   - Helped debug the file structure issue (styles was a folder, not a file)
-   - I adjusted accordingly!
-
-6. "Help generate a short README for this assignment (Excluding Notes/Assumptions)"
-   - Used the README that it Generated
-   - Added Notes/Assumptions
+4. "Update the README according to what assignment requires."
+   - Showed my current README.
+   - Updated my README with everything that I did. I made some edits to it afterwards.
