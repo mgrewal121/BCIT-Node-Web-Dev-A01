@@ -1,0 +1,88 @@
+<h1>Manage Contacts</h1>
+
+<p><a href="/admin">← Back to Dashboard</a></p>
+
+<% if (contacts.length === 0) { %>
+    <p>No contact submissions yet.</p>
+<% } else { %>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% contacts.forEach(contact => { %>
+                <tr class="<%= contact.isRead ? 'read' : 'unread' %>">
+                    <td><%= new Date(contact.postedDate).toLocaleDateString() %></td>
+                    <td><%= contact.name %></td>
+                    <td><%= contact.email %></td>
+                    <td class="message-preview"><%= contact.message.substring(0, 50) %>...</td>
+                    <td>
+                        <span class="status-badge <%= contact.isRead ? 'read' : 'unread' %>">
+                            <%= contact.isRead ? 'Read' : 'Unread' %>
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <button 
+                            class="btn-small toggle-read" 
+                            data-id="<%= contact._id %>"
+                            data-read="<%= contact.isRead %>"
+                        >
+                            <%= contact.isRead ? 'Mark Unread' : 'Mark Read' %>
+                        </button>
+                        <button 
+                            class="btn-small btn-danger delete-contact" 
+                            data-id="<%= contact._id %>"
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } %>
+
+<script>
+// Toggle read/unread
+document.querySelectorAll('.toggle-read').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const id = this.dataset.id;
+        try {
+            const response = await fetch(`/admin/contacts/${id}/read`, {
+                method: 'PATCH'
+            });
+            if (response.ok) {
+                location.reload();
+            }
+        } catch (error) {
+            alert('Error updating status');
+        }
+    });
+});
+
+// Delete contact
+document.querySelectorAll('.delete-contact').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        if (!confirm('Delete this contact submission?')) return;
+        
+        const id = this.dataset.id;
+        try {
+            const response = await fetch(`/admin/contacts/${id}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                location.reload();
+            }
+        } catch (error) {
+            alert('Error deleting contact');
+        }
+    });
+});
+</script>

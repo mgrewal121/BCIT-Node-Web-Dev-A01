@@ -2,6 +2,15 @@
     <h1><%= project.title %></h1>
     <p class="tagline"><%= project.tagline %></p>
     
+    <% if (project.categoryId) { %>
+        <p class="project-category">
+            <strong>Category:</strong> 
+            <a href="/projects/category/<%= project.categoryId.slug %>">
+                <%= project.categoryId.name %>
+            </a>
+        </p>
+    <% } %>
+    
     <div class="project-images">
         <% project.images.forEach(image => { %>
             <img src="<%= image.path %>" alt="<%= image.alt %>" class="project-screenshot">
@@ -26,14 +35,14 @@
         <h3>Tags</h3>
         <div class="tags">
             <% project.tags.forEach(tag => { %>
-                <span class="tag"><%= tag %></span>
+                <a href="/projects?tag=<%= tag.name %>" class="tag"><%= tag.name %></a>
             <% }); %>
         </div>
     </section>
     
     <section class="project-dates">
-        <p><strong>Created:</strong> <%= new Date(project.dates.created).toLocaleDateString() %></p>
-        <p><strong>Last Updated:</strong> <%= new Date(project.dates.updated).toLocaleDateString() %></p>
+        <p><strong>Created:</strong> <%= project.dates.created %></p>
+        <p><strong>Last Updated:</strong> <%= project.dates.updated %></p>
     </section>
     
     <a href="/projects" class="btn">← Back to Projects</a>

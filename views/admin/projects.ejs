@@ -1,0 +1,74 @@
+<h1>Manage Projects</h1>
+
+<p><a href="/admin">← Back to Dashboard</a></p>
+<p><a href="/admin/projects/new" class="btn">Create New Project</a></p>
+
+<% if (projects.length === 0) { %>
+    <p>No projects yet.</p>
+<% } else { %>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Tags</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% projects.forEach(project => { %>
+                <tr>
+                    <td><strong><%= project.title %></strong></td>
+                    <td><code><%= project.slug %></code></td>
+                    <td><%= project.categoryId ? project.categoryId.name : 'N/A' %></td>
+                    <td>
+                        <span class="status-badge <%= project.isActive ? 'active' : 'inactive' %>">
+                            <%= project.isActive ? 'Active' : 'Inactive' %>
+                        </span>
+                    </td>
+                    <td>
+                        <% project.tags.slice(0, 3).forEach(tag => { %>
+                            <span class="tag-small"><%= tag.name %></span>
+                        <% }); %>
+                        <% if (project.tags.length > 3) { %>
+                            <span class="tag-small">+<%= project.tags.length - 3 %></span>
+                        <% } %>
+                    </td>
+                    <td class="actions">
+                        <a href="/projects/<%= project.slug %>" class="btn-small" target="_blank">View</a>
+                        <a href="/admin/projects/<%= project._id %>/edit" class="btn-small">Edit</a>
+                        <button 
+                            class="btn-small btn-danger delete-project" 
+                            data-id="<%= project._id %>"
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } %>
+
+<script>
+// Delete project
+document.querySelectorAll('.delete-project').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        if (!confirm('Delete this project?')) return;
+        
+        const id = this.dataset.id;
+        try {
+            const response = await fetch(`/admin/projects/${id}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                location.reload();
+            }
+        } catch (error) {
+            alert('Error deleting project');
+        }
+    });
+});
+</script>

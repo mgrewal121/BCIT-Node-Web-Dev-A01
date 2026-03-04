@@ -1,10 +1,15 @@
+
+require('dotenv').config();
+
 const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 
+const { connectDB } = require('./src/server/config/database');
+
 const pagesRouter = require('./src/server/routes/pages.routes');
 const apiRouter = require('./src/server/routes/api.routes');
-
+const adminRouter = require('./src/server/routes/admin.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/', pagesRouter);
 app.use('/api', apiRouter);
+app.use('/admin', adminRouter);
 
 // Error handling middleware
 app.use((req, res) => {
@@ -41,7 +47,21 @@ app.use((req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Connect to database and start server
+async function startServer() {
+  try {
+    // Connect to MongoDB
+    await connectDB();
+
+    // Start Express server
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
+}
+
+// Start server
+startServer();

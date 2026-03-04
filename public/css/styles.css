@@ -459,6 +459,269 @@ textarea {
 }
 
 /* ========================================
+   ADMIN STYLES (NEW FOR A03)
+   ======================================== */
+
+/* Admin Stats Dashboard */
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stat-card h3 {
+    margin-top: 0;
+    color: #222;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0066cc;
+    margin: 1rem 0;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.admin-links {
+    margin-top: 2rem;
+}
+
+.admin-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-links li {
+    margin-bottom: 0.5rem;
+}
+
+/* Admin Tables */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background: white;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-table th {
+    background: #f0f0f0;
+    font-weight: bold;
+    color: #222;
+}
+
+.admin-table tr:hover {
+    background: #f9f9f9;
+}
+
+.admin-table .actions {
+    white-space: nowrap;
+}
+
+.admin-table .message-preview {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-table tr.unread {
+    background: #e3f2fd;
+}
+
+.admin-table tr.read {
+    opacity: 0.7;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.read {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.unread {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Tag Pills */
+.tag-small {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #0066cc;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-right: 0.25rem;
+}
+
+/* Buttons */
+.btn-small {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    background: #0066cc;
+    color: white;
+    margin-right: 0.5rem;
+}
+
+.btn-small:hover {
+    background: #004c99;
+}
+
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-danger:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Admin Forms */
+.admin-form {
+    max-width: 600px;
+    margin: 2rem 0;
+}
+
+.admin-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.admin-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #222;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.admin-form small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.admin-form code {
+    background: #f0f0f0;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   CATEGORY BADGES
+   ======================================== */
+
+.category-badge {
+    margin: 0.5rem 0;
+}
+
+.category-badge a {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #0066cc;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.category-badge a:hover {
+    background: #bbdefb;
+}
+
+.project-category {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.project-category a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.project-category a:hover {
+    text-decoration: underline;
+}
+
+.category-description {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+/* Clickable tags */
+.tags a.tag {
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.tags a.tag:hover {
+    background: #555;
+}
+
+/* ========================================
    RESPONSIVE DESIGN
    ======================================== */
 

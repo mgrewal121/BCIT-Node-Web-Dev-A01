@@ -1,4 +1,8 @@
-<h1>Projects</h1>
+<h1><%= typeof category !== 'undefined' ? category.name + ' Projects' : 'Projects' %></h1>
+
+<% if (typeof category !== 'undefined' && category.description) { %>
+    <p class="category-description"><%= category.description %></p>
+<% } %>
 
 <div class="search-container">
     <form action="/projects" method="GET">
@@ -19,6 +23,13 @@
     </p>
 <% } %>
 
+<% if (tagFilter) { %>
+    <p class="search-results">
+        Filtering by tag: "<%= tagFilter %>" (<%= projects.length %> found)
+        <a href="/projects">Clear filter</a>
+    </p>
+<% } %>
+
 <% if (projects.length > 0) { %>
     <div class="projects-grid">
         <% projects.forEach(project => { %>
@@ -26,5 +37,9 @@
         <% }); %>
     </div>
 <% } else { %>
-    <p>No projects found<% if (searchTerm) { %> matching "<%= searchTerm %>"<% } %>.</p>
+    <p>No projects found
+        <% if (searchTerm) { %> matching "<%= searchTerm %>"<% } %>
+        <% if (tagFilter) { %> with tag "<%= tagFilter %>"<% } %>
+        <% if (typeof category !== 'undefined') { %> in <%= category.name %><% } %>.
+    </p>
 <% } %>

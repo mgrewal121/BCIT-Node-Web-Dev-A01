@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const projectsRepo = require('../lib/projects.repository');
+const { Contact } = require('../models');
 
 /**
  * GET /
@@ -28,16 +29,18 @@ router.get('/about', (req, res) => {
  * GET /projects
  * Projects listing page with optional search
  */
-router.get('/projects', (req, res) => {
+router.get('/projects', async (req, res) => {
   try {
     const searchTerm = req.query.q || '';
-    const projects = projectsRepo.getActiveProjects(searchTerm);
+    const tagFilter = req.query.tag || '';
+    const projects = await projectsRepo.getActiveProjects(searchTerm, tagFilter);
 
     res.locals.layout = 'layouts/layout-full';
     res.render('projects', {
       title: 'Projects',
       projects,
-      searchTerm
+      searchTerm,
+      tagFilter
     });
   } catch (error) {
     console.error('Error loading projects:', error);
@@ -45,13 +48,43 @@ router.get('/projects', (req, res) => {
   }
 });
 
+// GET by category slug
+router.get('/projects/category/:slug', async (req, res) => {
+  try {
+    const { Category } = require('../models');
+    const category = await Category.findOne({ slug: req.params.slug }).lean();
+    
+    if (!category) {
+      res.locals.layout = 'layouts/layout-full';
+      return res.status(404).render('404', {
+        title: '404 - Not Found'
+      });
+    }
+
+    const projects = await projectsRepo.getProjectsByCategory(req.params.slug);
+
+    res.locals.layout = 'layouts/layout-full';
+    res.render('projects', {
+      title: `${category.name} Projects`,
+      projects,
+      searchTerm: '',
+      tagFilter: '',
+      category
+    });
+  } catch (error) {
+    console.error('Error loading category projects:', error);
+    res.status(500).send('Error loading projects');
+  }
+});
+
+
 /**
  * GET /projects/:slug
  * Individual project detail page with sidebar
  */
-router.get('/projects/:slug', (req, res) => {
+router.get('/projects/:slug', async (req, res) => {
   try {
-    const project = projectsRepo.getProjectBySlug(req.params.slug);
+    const project = await projectsRepo.getProjectBySlug(req.params.slug);
 
     if (!project) {
       res.locals.layout = 'layouts/layout-full';
@@ -60,7 +93,7 @@ router.get('/projects/:slug', (req, res) => {
       });
     }
 
-    const otherProjects = projectsRepo.getOtherActiveProjects(req.params.slug);
+    const otherProjects = await projectsRepo.getOtherActiveProjects(req.params.slug);
 
     res.locals.layout = 'layouts/layout-sidebar';
     res.render('project-details', {
@@ -89,7 +122,7 @@ router.get('/contact', (req, res) => {
  * POST /contact
  * Handle contact form submission
  */
-router.post('/contact', (req, res) => {
+router.post('/contact', async (req, res) => {
   const { name, email, message } = req.body;
 
   // Validation
@@ -101,15 +134,32 @@ router.post('/contact', (req, res) => {
     });
   }
 
-  // Log the submission (in production, you'd send email or save to DB)
-  console.log('Contact form submission:', { name, email, message });
+  try {
+    // Save to MongoDB
+    await Contact.create({
+      name,
+      email,
+      message,
+      postedDate: new Date(),
+      isRead: false
+    });
 
-  // Render success page
-  res.locals.layout = 'layouts/layout-full';
-  res.render('contact-success', {
-    title: 'Message Sent',
-    name
-  });
+    console.log('Contact form submission saved to database:', { name, email });
+
+    // Render success page
+    res.locals.layout = 'layouts/layout-full';
+    res.render('contact-success', {
+      title: 'Message Sent',
+      name
+    });
+  } catch (error) {
+    console.error('Error saving contact submission:', error);
+    res.locals.layout = 'layouts/layout-full';
+    res.render('contact', {
+      title: 'Contact',
+      error: 'An error occurred. Please try again.'
+    });
+  }
 });
 
 module.exports = router;

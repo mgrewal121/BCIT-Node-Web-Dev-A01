@@ -1,5 +1,5 @@
 <article class="project-card">
-    <% const coverImage = project.images.find(img => img.type === 'cover'); %>
+    <% const coverImage = project.images && project.images.length > 0 ? project.images.find(img => img.type === 'cover') : null; %>
     <% if (coverImage) { %>
         <img src="<%= coverImage.path %>" alt="<%= coverImage.alt %>" class="project-image">
     <% } %>
@@ -7,6 +7,14 @@
     <div class="project-info">
         <h3><%= project.title %></h3>
         <p class="tagline"><%= project.tagline %></p>
+        
+        <% if (project.categoryId) { %>
+            <p class="category-badge">
+                <a href="/projects/category/<%= project.categoryId.slug %>">
+                    <%= project.categoryId.name %>
+                </a>
+            </p>
+        <% } %>
         
         <div class="stack">
             <% project.stack.forEach(tech => { %>

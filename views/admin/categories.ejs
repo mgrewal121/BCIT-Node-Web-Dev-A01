@@ -1,0 +1,73 @@
+<h1>Manage Categories</h1>
+
+<p><a href="/admin">← Back to Dashboard</a></p>
+<p><a href="/admin/categories/new" class="btn">Create New Category</a></p>
+
+<% if (categories.length === 0) { %>
+    <p>No categories yet.</p>
+<% } else { %>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Description</th>
+                <th>Projects</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% categories.forEach(category => { %>
+                <tr>
+                    <td><strong><%= category.name %></strong></td>
+                    <td><code><%= category.slug %></code></td>
+                    <td><%= category.description || 'N/A' %></td>
+                    <td><%= category.projectCount %></td>
+                    <td class="actions">
+                        <a href="/admin/categories/<%= category._id %>/edit" class="btn-small">Edit</a>
+                        <button 
+                            class="btn-small btn-danger delete-category" 
+                            data-id="<%= category._id %>"
+                            data-count="<%= category.projectCount %>"
+                            <%= category.projectCount > 0 ? 'disabled' : '' %>
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } %>
+
+<script>
+// Delete category
+document.querySelectorAll('.delete-category').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const count = parseInt(this.dataset.count);
+        
+        if (count > 0) {
+            alert(`Cannot delete: ${count} project(s) are using this category.`);
+            return;
+        }
+        
+        if (!confirm('Delete this category?')) return;
+        
+        const id = this.dataset.id;
+        try {
+            const response = await fetch(`/admin/categories/${id}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert(data.error || 'Error deleting category');
+            }
+        } catch (error) {
+            alert('Error deleting category');
+        }
+    });
+});
+</script>
