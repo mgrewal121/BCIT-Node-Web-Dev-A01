@@ -1,60 +1,54 @@
-AI Interaction Log - Node A03 MongoDB Integration Assignment
+AI Interaction Log - Node A04 Authentication & Image Uploads Assignment
 
 AI Tool Used: Claude
-Dates AI was used: February 28-March 4, 2026
+Dates AI was used: March 19-20, 2026
 
 Purpose of AI Usage:
-- Help to set up MongoDB Atlas connection and Mongoose models
-- Guide through creating admin CMS routes and functionality
-- Assist with refactoring repository for async/await database queries
-- Help create and style admin view templates
+- Help to implement Passport.js authentication with session management
+- Guide through creating role-based access control (RBAC) system
+- Help create and style authentication pages and update existing styling
+- Guide through manual testing of all features
 
 Specific Prompts/Questions Asked:
 
-1. "I need to connect my Node.js app to MongoDB Atlas. Can you help me set up the database connection file?"
-   - Showed A03 assignment requirements for MongoDB integration.
-   - **Used Claude to create database.js** with connection logic and error handling.
-   - Walked me through environment variables and connection string setup.
-   - Helped me integrate it into server.js with graceful failure handling.
+1. "I need to add authentication to my A03 project. Help me set up Passport.js with local strategy and sessions."
+   - Showed A04 assignment requirements for authentication.
+   - Helped install required packages (passport, bcrypt, express-session, connect-mongo).
+   - **Asked Claude to generate auth.js file** for middleware (isAuthenticated, isModerator, isAdmin).
+   - **Asked Claude to generate auth.routes.js file** for login, logout, and registration routes.
+   - Explained how to integrate session middleware and passport into server.js.
+   - Walked me through password hashing in the User model.
 
-2. "Create Mongoose models for Categories, Projects, and Contacts based on the assignment schema requirements."
-   - Showed the required data model specifications from assignment.
-   - Created all three model files (category.js, project.js, contact.js).
-   - Explained embedded documents for tags and ObjectId references for categories.
-   - Helped me understand populate() for loading related data.
+2. "Create the User model with roles and show me how to implement role-based access control."
+   - Showed assignment specification for USER, MODERATOR, and ADMIN roles.
+   - **Asked Claude to guide me through roles creation and how to clearly follow specs of the assignment**.
+   - Created user.js model with email, nickname, passwordHash, and role fields.
+   - Explained RBAC rules: USER (public only), MODERATOR (contacts only), ADMIN (full access).
+   - Helped me understand how to protect routes with middleware (isModerator, isAdmin).
+   - Showed how to conditionally render UI elements based on currentUser.role.
 
-3. "I need to create admin routes for managing projects. Can you help me with the POST route to create new projects with category assignment and tags?"
-   - Showed admin routes requirements from assignment.
-   - **Used Claude to create POST function to create new project in admin.routes.js**.
-   - Explained how to parse comma-separated tags into embedded objects.
-   - Helped implement form validation and error handling.
+3. "My existing CSS needs updates for auth pages and I need new styling for image management."
+   - Showed my current styles.css file.
+   - **Used Claude to style for both existing and new pages**.
+   - Added auth page styling (login/register forms, auth containers, error messages).
+   - Added image management CSS (upload forms, image grids, featured badges).
+   - Updated navbar styling to show login/logout conditionally and display role badges.
+   - Kept all my original A03 styling while adding new A04 sections.
 
-4. "My admin pages need styling. Can you add professional CSS for the admin dashboard, tables, and forms?"
-   - Showed my existing styles.css file.
-   - **Employed Claude's help to add styling to Admin pages**.
-   - Added admin-specific CSS for tables, stat cards, buttons, badges, and forms.
-   - Kept my original styling intact while adding new admin sections.
+7. "Walk me through testing everything to make sure it all works correctly."
+   - **Asked Claude to guide me through manual testing to see that everything works with the project**.
+   - Created comprehensive testing checklist covering all A04 requirements.
+   - Tested authentication flow: registration, login, logout.
+   - Tested RBAC: USER gets 403, MODERATOR partial access, ADMIN full access.
+   - Tested image uploads: upload, set featured, delete, display on public pages.
+   - Verified access logging captures all denied attempts.
+   - Confirmed featured images display correctly on project cards and detail pages.
 
-5. "I need to refactor my project-card.ejs and project-details.ejs to work with MongoDB data instead of JSON. The structure is different now."
-   - Showed my current EJS templates and the new MongoDB data structure.
-   - **Utilized Claude for refactor help with project card and details**.
-   - Updated templates to handle populated categoryId and embedded tags array.
-   - Added safety checks for optional fields (images, stack, tagline).
-
-6. "Create the EJS view templates for the admin section - dashboard, contacts, categories, and projects CRUD."
-   - Showed admin routes and what data each page receives.
-   - **Used Claude to help create and format EJS pages for Admin section**.
-   - Generated dashboard.ejs, contacts.ejs, categories.ejs, category-form.ejs, projects.ejs, and project-form.ejs.
-   - Implemented inline JavaScript for AJAX delete and toggle read/unread operations.
-
-7. "My routes are returning empty objects from the repository. What's wrong?"
-   - Showed my pages.routes.js and projects.repository.js code.
-   - Claude identified I was missing 'async' keyword on route handlers and 'await' on repository calls.
-   - Explained that async functions return Promises and need await to get actual data.
-   - Helped me add async/await throughout all routes that use the repository.
-
-8. "Implement safe category deletion that prevents deleting categories when projects reference them."
-   - Showed assignment requirement for reference count and safe deletion.
-   - Helped add project count aggregation in categories list route.
-   - Implemented server-side validation to refuse deletion.
-   - Added disabled state for delete button when count > 0.
+8. "Update my README to reflect all the A04 changes."
+   - Showed my A03 README as starting point.
+   - **Asked Claude to help update README for Assignment 4**.
+   - Added authentication section with test user credentials.
+   - Documented all new routes (auth routes, image management routes).
+   - Added RBAC permissions table showing what each role can access.
+   - Included security features section and changes from A03 table.
+   - Made sure .env variables and their purposes were clearly documented.
