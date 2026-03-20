@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 
-
+// Tag schema 
 const tagSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true
   }
-}, { _id: false });
+}, { _id: false }); 
 
+// Image schema
 const imageSchema = new mongoose.Schema({
   path: {
     type: String,
@@ -18,12 +19,11 @@ const imageSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  type: {
-    type: String,
-    default: 'screenshot'
+  isFeatured: {
+    type: Boolean,
+    default: false
   }
-}, { _id: false });
-
+}, { _id: true });
 
 const projectSchema = new mongoose.Schema({
   slug: {
@@ -57,12 +57,13 @@ const projectSchema = new mongoose.Schema({
     type: [tagSchema],
     default: []
   },
-  // Reference to Category 
+
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     required: [true, 'Category is required']
   },
+
   stack: {
     type: [String],
     default: []

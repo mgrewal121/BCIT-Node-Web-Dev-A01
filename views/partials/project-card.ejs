@@ -1,12 +1,21 @@
 <article class="project-card">
-    <% const coverImage = project.images && project.images.length > 0 ? project.images.find(img => img.type === 'cover') : null; %>
-    <% if (coverImage) { %>
-        <img src="<%= coverImage.path %>" alt="<%= coverImage.alt %>" class="project-image">
+    <% 
+    // Find featured image, or fall back to first image
+    const featuredImage = project.images && project.images.length > 0 
+        ? project.images.find(img => img.isFeatured) || project.images[0]
+        : null;
+    %>
+    
+    <% if (featuredImage) { %>
+        <img src="<%= featuredImage.path %>" alt="<%= featuredImage.alt %>" class="project-image">
     <% } %>
     
     <div class="project-info">
         <h3><%= project.title %></h3>
-        <p class="tagline"><%= project.tagline %></p>
+        
+        <% if (project.tagline) { %>
+            <p class="tagline"><%= project.tagline %></p>
+        <% } %>
         
         <% if (project.categoryId) { %>
             <p class="category-badge">
@@ -16,11 +25,13 @@
             </p>
         <% } %>
         
-        <div class="stack">
-            <% project.stack.forEach(tech => { %>
-                <span class="badge"><%= tech %></span>
-            <% }); %>
-        </div>
+        <% if (project.stack && project.stack.length > 0) { %>
+            <div class="stack">
+                <% project.stack.forEach(tech => { %>
+                    <span class="badge"><%= tech %></span>
+                <% }); %>
+            </div>
+        <% } %>
         
         <a href="/projects/<%= project.slug %>" class="btn">View Project</a>
     </div>

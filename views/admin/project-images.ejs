@@ -1,0 +1,160 @@
+<h1>Manage Images: <%= project.title %></h1>
+
+<p><a href="/admin/projects">← Back to Projects</a></p>
+
+<div class="image-management">
+    <!-- Upload Form -->
+    <div class="upload-section">
+        <h2>Upload New Image</h2>
+        <form id="uploadForm" enctype="multipart/form-data" class="image-upload-form">
+            <div class="form-group">
+                <label for="image">Select Image *</label>
+                <input 
+                    type="file" 
+                    id="image" 
+                    name="image" 
+                    accept="image/*"
+                    required
+                >
+                <small>Accepted formats: JPG, PNG, GIF, WebP (max 5MB)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="alt">Alt Text</label>
+                <input 
+                    type="text" 
+                    id="alt" 
+                    name="alt" 
+                    placeholder="Description of the image"
+                >
+            </div>
+            
+            <button type="submit" class="btn">Upload Image</button>
+        </form>
+        
+        <div id="uploadStatus"></div>
+    </div>
+
+    <!-- Current Images -->
+    <div class="current-images">
+        <h2>Current Images (<%= project.images.length %>)</h2>
+        
+        <% if (project.images.length === 0) { %>
+            <p>No images uploaded yet.</p>
+        <% } else { %>
+            <div class="images-grid">
+                <% project.images.forEach(image => { %>
+                    <div class="image-item <%= image.isFeatured ? 'featured' : '' %>" data-image-id="<%= image._id %>">
+                        <img src="<%= image.path %>" alt="<%= image.alt %>">
+                        
+                        <div class="image-info">
+                            <p class="image-alt"><%= image.alt || 'No alt text' %></p>
+                            
+                            <% if (image.isFeatured) { %>
+                                <span class="featured-badge">★ Featured</span>
+                            <% } %>
+                            
+                            <div class="image-actions">
+                                <% if (!image.isFeatured) { %>
+                                    <button 
+                                        class="btn-small set-featured" 
+                                        data-project-id="<%= project._id %>"
+                                        data-image-id="<%= image._id %>"
+                                    >
+                                        Set as Featured
+                                    </button>
+                                <% } %>
+                                
+                                <button 
+                                    class="btn-small btn-danger delete-image" 
+                                    data-project-id="<%= project._id %>"
+                                    data-image-id="<%= image._id %>"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+// Upload Image
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const statusDiv = document.getElementById('uploadStatus');
+    
+    try {
+        statusDiv.innerHTML = '<p class="info-message">Uploading...</p>';
+        
+        const response = await fetch('/admin/projects/<%= project._id %>/images', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            statusDiv.innerHTML = '<p class="success-message">Image uploaded successfully!</p>';
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            statusDiv.innerHTML = `<p class="error-message">${data.error || 'Upload failed'}</p>`;
+        }
+    } catch (error) {
+        statusDiv.innerHTML = '<p class="error-message">Error uploading image</p>';
+    }
+});
+
+// Set Featured Image
+document.querySelectorAll('.set-featured').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const projectId = this.dataset.projectId;
+        const imageId = this.dataset.imageId;
+        
+        if (!confirm('Set this image as featured?')) return;
+        
+        try {
+            const response = await fetch(`/admin/projects/${projectId}/images/${imageId}/featured`, {
+                method: 'PATCH'
+            });
+            
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Error setting featured image');
+            }
+        } catch (error) {
+            alert('Error setting featured image');
+        }
+    });
+});
+
+// Delete Image
+document.querySelectorAll('.delete-image').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const projectId = this.dataset.projectId;
+        const imageId = this.dataset.imageId;
+        
+        if (!confirm('Delete this image? This cannot be undone.')) return;
+        
+        try {
+            const response = await fetch(`/admin/projects/${projectId}/images/${imageId}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Error deleting image');
+            }
+        } catch (error) {
+            alert('Error deleting image');
+        }
+    });
+});
+</script>

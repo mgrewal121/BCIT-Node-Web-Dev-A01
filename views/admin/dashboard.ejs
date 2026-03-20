@@ -1,33 +1,63 @@
 <h1>Admin Dashboard</h1>
 
+<% if (currentUser) { %>
+    <p>Welcome, <strong><%= currentUser.nickname %></strong> (<%= currentUser.role %>)</p>
+<% } %>
+
 <div class="admin-stats">
-    <div class="stat-card">
-        <h3>Projects</h3>
-        <p class="stat-number"><%= stats.activeProjects %> / <%= stats.totalProjects %></p>
-        <p class="stat-label">Active / Total</p>
-        <a href="/admin/projects" class="btn">Manage Projects</a>
-    </div>
+    <!-- Projects Card - ADMIN ONLY -->
+    <% if (currentUser && currentUser.role === 'ADMIN') { %>
+        <div class="stat-card">
+            <h3>Projects</h3>
+            <p class="stat-number"><%= stats.activeProjects %> / <%= stats.totalProjects %></p>
+            <p class="stat-label">Active / Total</p>
+            <a href="/admin/projects" class="btn">Manage Projects</a>
+        </div>
+    <% } %>
 
-    <div class="stat-card">
-        <h3>Categories</h3>
-        <p class="stat-number"><%= stats.totalCategories %></p>
-        <p class="stat-label">Total Categories</p>
-        <a href="/admin/categories" class="btn">Manage Categories</a>
-    </div>
+    <!-- Categories Card - ADMIN ONLY -->
+    <% if (currentUser && currentUser.role === 'ADMIN') { %>
+        <div class="stat-card">
+            <h3>Categories</h3>
+            <p class="stat-number"><%= stats.totalCategories %></p>
+            <p class="stat-label">Total Categories</p>
+            <a href="/admin/categories" class="btn">Manage Categories</a>
+        </div>
+    <% } %>
 
+    <!-- Contacts Card - MODERATOR AND ADMIN -->
     <div class="stat-card">
         <h3>Contacts</h3>
         <p class="stat-number"><%= stats.unreadContacts %> / <%= stats.totalContacts %></p>
         <p class="stat-label">Unread / Total</p>
         <a href="/admin/contacts" class="btn">Manage Contacts</a>
     </div>
+    
+    <!-- Users Card - ADMIN ONLY -->
+    <% if (currentUser && currentUser.role === 'ADMIN') { %>
+        <div class="stat-card">
+            <h3>Users</h3>
+            <p class="stat-number"><%= stats.totalUsers %></p>
+            <p class="stat-label">Total Users</p>
+            <% if (stats.totalUsers) { %>
+                <a href="/admin/users" class="btn">Manage Users</a>
+            <% } else { %>
+                <span class="btn" style="opacity: 0.5; cursor: not-allowed;">No Users</span>
+            <% } %>
+        </div>
+    <% } %>
 </div>
 
 <div class="admin-links">
     <h2>Quick Links</h2>
     <ul>
-        <li><a href="/admin/projects/new">Create New Project</a></li>
-        <li><a href="/admin/categories/new">Create New Category</a></li>
+        <% if (currentUser && currentUser.role === 'ADMIN') { %>
+            <li><a href="/admin/projects/new">Create New Project</a></li>
+            <li><a href="/admin/categories/new">Create New Category</a></li>
+        <% } %>
+        <% if (currentUser && (currentUser.role === 'MODERATOR' || currentUser.role === 'ADMIN')) { %>
+            <li><a href="/admin/contacts">View Contact Submissions</a></li>
+        <% } %>
         <li><a href="/">View Public Site</a></li>
     </ul>
 </div>

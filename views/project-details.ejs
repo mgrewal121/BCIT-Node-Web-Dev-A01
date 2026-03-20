@@ -1,6 +1,9 @@
 <article class="project-detail">
     <h1><%= project.title %></h1>
-    <p class="tagline"><%= project.tagline %></p>
+    
+    <% if (project.tagline) { %>
+        <p class="tagline"><%= project.tagline %></p>
+    <% } %>
     
     <% if (project.categoryId) { %>
         <p class="project-category">
@@ -11,39 +14,70 @@
         </p>
     <% } %>
     
-    <div class="project-images">
-        <% project.images.forEach(image => { %>
-            <img src="<%= image.path %>" alt="<%= image.alt %>" class="project-screenshot">
-        <% }); %>
-    </div>
+    <% if (project.images && project.images.length > 0) { %>
+        <% 
+        // Separate featured and gallery images
+        const featuredImage = project.images.find(img => img.isFeatured);
+        const galleryImages = project.images.filter(img => !img.isFeatured);
+        %>
+        
+        <!-- Featured Image (Hero) -->
+        <% if (featuredImage) { %>
+            <div class="project-hero">
+                <img src="<%= featuredImage.path %>" alt="<%= featuredImage.alt %>" class="hero-image">
+            </div>
+        <% } %>
+        
+        <!-- Image Gallery -->
+        <% if (galleryImages.length > 0) { %>
+            <div class="project-gallery">
+                <h3>Gallery</h3>
+                <div class="gallery-grid">
+                    <% galleryImages.forEach(image => { %>
+                        <img src="<%= image.path %>" alt="<%= image.alt %>" class="gallery-image">
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
     
     <section class="project-description">
         <h2>About This Project</h2>
         <p><%= project.description %></p>
     </section>
     
-    <section class="project-tech">
-        <h3>Technologies Used</h3>
-        <div class="stack">
-            <% project.stack.forEach(tech => { %>
-                <span class="badge"><%= tech %></span>
-            <% }); %>
-        </div>
-    </section>
+    <% if (project.stack && project.stack.length > 0) { %>
+        <section class="project-tech">
+            <h3>Technologies Used</h3>
+            <div class="stack">
+                <% project.stack.forEach(tech => { %>
+                    <span class="badge"><%= tech %></span>
+                <% }); %>
+            </div>
+        </section>
+    <% } %>
     
-    <section class="project-tags">
-        <h3>Tags</h3>
-        <div class="tags">
-            <% project.tags.forEach(tag => { %>
-                <a href="/projects?tag=<%= tag.name %>" class="tag"><%= tag.name %></a>
-            <% }); %>
-        </div>
-    </section>
+    <% if (project.tags && project.tags.length > 0) { %>
+        <section class="project-tags">
+            <h3>Tags</h3>
+            <div class="tags">
+                <% project.tags.forEach(tag => { %>
+                    <a href="/projects?tag=<%= tag.name %>" class="tag"><%= tag.name %></a>
+                <% }); %>
+            </div>
+        </section>
+    <% } %>
     
-    <section class="project-dates">
-        <p><strong>Created:</strong> <%= project.dates.created %></p>
-        <p><strong>Last Updated:</strong> <%= project.dates.updated %></p>
-    </section>
+    <% if (project.dates) { %>
+        <section class="project-dates">
+            <% if (project.dates.created) { %>
+                <p><strong>Created:</strong> <%= project.dates.created %></p>
+            <% } %>
+            <% if (project.dates.updated) { %>
+                <p><strong>Last Updated:</strong> <%= project.dates.updated %></p>
+            <% } %>
+        </section>
+    <% } %>
     
     <a href="/projects" class="btn">← Back to Projects</a>
 </article>

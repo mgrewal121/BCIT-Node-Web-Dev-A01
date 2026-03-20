@@ -1,16 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { Category, Project, Contact } = require('../models');
+const path = require('path');
+const { Category, Project, Contact, User } = require('../models');
+const { isModerator, isAdmin } = require('../middleware/auth');
+const upload = require('../config/multer');
 
-// GET admin dashboard
-router.get('/', async (req, res) => {
+
+/**
+ * GET /admin
+ * Admin dashboard - accessible to MODERATOR and ADMIN
+ */
+router.get('/', isModerator, async (req, res) => {
   try {
     const stats = {
       totalProjects: await Project.countDocuments(),
       activeProjects: await Project.countDocuments({ isActive: true }),
       totalCategories: await Category.countDocuments(),
       unreadContacts: await Contact.countDocuments({ isRead: false }),
-      totalContacts: await Contact.countDocuments()
+      totalContacts: await Contact.countDocuments(),
+      totalUsers: await User.countDocuments()
     };
 
     res.locals.layout = 'layouts/layout-full';
@@ -24,8 +32,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET all contact submissions
-router.get('/contacts', async (req, res) => {
+/**
+ * GET /admin/contacts
+ * List all contact submissions - MODERATOR and ADMIN
+ */
+router.get('/contacts', isModerator, async (req, res) => {
   try {
     const contacts = await Contact.find()
       .sort({ postedDate: -1 })
@@ -42,8 +53,11 @@ router.get('/contacts', async (req, res) => {
   }
 });
 
-// PATCH toggle contact read/unread
-router.patch('/contacts/:id/read', async (req, res) => {
+/**
+ * PATCH /admin/contacts/:id/read
+ * Toggle read/unread status - MODERATOR and ADMIN
+ */
+router.patch('/contacts/:id/read', isModerator, async (req, res) => {
   try {
     const contact = await Contact.findById(req.params.id);
     
@@ -61,8 +75,11 @@ router.patch('/contacts/:id/read', async (req, res) => {
   }
 });
 
-// DELETE contact submission
-router.delete('/contacts/:id', async (req, res) => {
+/**
+ * DELETE /admin/contacts/:id
+ * Delete a contact submission - ADMIN ONLY
+ */
+router.delete('/contacts/:id', isAdmin, async (req, res) => {
   try {
     const contact = await Contact.findByIdAndDelete(req.params.id);
     
@@ -77,9 +94,11 @@ router.delete('/contacts/:id', async (req, res) => {
   }
 });
 
-
-// GET all categories
-router.get('/categories', async (req, res) => {
+/**
+ * GET /admin/categories
+ * List all categories - ADMIN ONLY
+ */
+router.get('/categories', isAdmin, async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 }).lean();
 
@@ -102,8 +121,11 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// GET create category form
-router.get('/categories/new', (req, res) => {
+/**
+ * GET /admin/categories/new
+ * Create category form - ADMIN ONLY
+ */
+router.get('/categories/new', isAdmin, (req, res) => {
   res.locals.layout = 'layouts/layout-full';
   res.render('admin/category-form', {
     title: 'Create Category',
@@ -111,8 +133,11 @@ router.get('/categories/new', (req, res) => {
   });
 });
 
-// POST create category
-router.post('/categories', async (req, res) => {
+/**
+ * POST /admin/categories
+ * Create category - ADMIN ONLY
+ */
+router.post('/categories', isAdmin, async (req, res) => {
   try {
     const { name, slug, description } = req.body;
 
@@ -139,8 +164,11 @@ router.post('/categories', async (req, res) => {
   }
 });
 
-// GET edit category form
-router.get('/categories/:id/edit', async (req, res) => {
+/**
+ * GET /admin/categories/:id/edit
+ * Edit category form - ADMIN ONLY
+ */
+router.get('/categories/:id/edit', isAdmin, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id).lean();
 
@@ -159,8 +187,11 @@ router.get('/categories/:id/edit', async (req, res) => {
   }
 });
 
-// POST update category
-router.post('/categories/:id', async (req, res) => {
+/**
+ * POST /admin/categories/:id
+ * Update category - ADMIN ONLY
+ */
+router.post('/categories/:id', isAdmin, async (req, res) => {
   try {
     const { name, slug, description } = req.body;
 
@@ -188,8 +219,11 @@ router.post('/categories/:id', async (req, res) => {
   }
 });
 
-// DELETE category if no projects reference it
-router.delete('/categories/:id', async (req, res) => {
+/**
+ * DELETE /admin/categories/:id
+ * Delete category - ADMIN ONLY
+ */
+router.delete('/categories/:id', isAdmin, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     
@@ -214,8 +248,11 @@ router.delete('/categories/:id', async (req, res) => {
   }
 });
 
-// GET all projects
-router.get('/projects', async (req, res) => {
+/**
+ * GET /admin/projects
+ * List all projects - ADMIN ONLY
+ */
+router.get('/projects', isAdmin, async (req, res) => {
   try {
     const projects = await Project.find()
       .populate('categoryId', 'name slug')
@@ -233,8 +270,11 @@ router.get('/projects', async (req, res) => {
   }
 });
 
-// GET create project form
-router.get('/projects/new', async (req, res) => {
+/**
+ * GET /admin/projects/new
+ * Create project form - ADMIN ONLY
+ */
+router.get('/projects/new', isAdmin, async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 }).lean();
 
@@ -250,12 +290,13 @@ router.get('/projects/new', async (req, res) => {
   }
 });
 
-// Create a new project
-// USED CLAUDE TO GENERATE THIS FUNCTION
-router.post('/projects', async (req, res) => {
+/**
+ * POST /admin/projects
+ * Create project - ADMIN ONLY
+ */
+router.post('/projects', isAdmin, async (req, res) => {
   try {
     const { slug, title, tagline, description, isActive, categoryId, tags, stack } = req.body;
-
 
     const tagArray = tags ? tags.split(',').map(t => ({ name: t.trim() })).filter(t => t.name) : [];
     const stackArray = stack ? stack.split(',').map(s => s.trim()).filter(s => s) : [];
@@ -285,8 +326,11 @@ router.post('/projects', async (req, res) => {
   }
 });
 
-// GET edit project form
-router.get('/projects/:id/edit', async (req, res) => {
+/**
+ * GET /admin/projects/:id/edit
+ * Edit project form - ADMIN ONLY
+ */
+router.get('/projects/:id/edit', isAdmin, async (req, res) => {
   try {
     const project = await Project.findById(req.params.id).lean();
     const categories = await Category.find().sort({ name: 1 }).lean();
@@ -311,12 +355,14 @@ router.get('/projects/:id/edit', async (req, res) => {
   }
 });
 
-// POST update project
-router.post('/projects/:id', async (req, res) => {
+/**
+ * POST /admin/projects/:id
+ * Update project - ADMIN ONLY
+ */
+router.post('/projects/:id', isAdmin, async (req, res) => {
   try {
     const { slug, title, tagline, description, isActive, categoryId, tags, stack } = req.body;
 
-    // Parse tags from comma-separated string
     const tagArray = tags ? tags.split(',').map(t => ({ name: t.trim() })).filter(t => t.name) : [];
     const stackArray = stack ? stack.split(',').map(s => s.trim()).filter(s => s) : [];
 
@@ -346,8 +392,11 @@ router.post('/projects/:id', async (req, res) => {
   }
 });
 
-// DELETE a project
-router.delete('/projects/:id', async (req, res) => {
+/**
+ * DELETE /admin/projects/:id
+ * Delete project - ADMIN ONLY
+ */
+router.delete('/projects/:id', isAdmin, async (req, res) => {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
     
@@ -359,6 +408,136 @@ router.delete('/projects/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting project:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * GET /admin/projects/:id/images
+ * Manage images for a project - ADMIN ONLY
+ */
+router.get('/projects/:id/images', isAdmin, async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id)
+      .populate('categoryId', 'name')
+      .lean();
+
+    if (!project) {
+      return res.status(404).send('Project not found');
+    }
+
+    res.locals.layout = 'layouts/layout-full';
+    res.render('admin/project-images', {
+      title: `Manage Images - ${project.title}`,
+      project
+    });
+  } catch (error) {
+    console.error('Error loading project images:', error);
+    res.status(500).send('Error loading project images');
+  }
+});
+
+/**
+ * POST /admin/projects/:id/images
+ * Upload new image to project - ADMIN ONLY
+ */
+router.post('/projects/:id/images', isAdmin, upload.single('image'), async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file uploaded' });
+    }
+
+    const { alt } = req.body;
+
+    // Add new image 
+    const newImage = {
+      path: `/uploads/${req.file.filename}`,
+      alt: alt || project.title,
+      isFeatured: project.images.length === 0 
+    };
+
+    project.images.push(newImage);
+    await project.save();
+
+    res.json({ 
+      success: true, 
+      message: 'Image uploaded successfully',
+      image: newImage
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ error: 'Error uploading image' });
+  }
+});
+
+/**
+ * PATCH /admin/projects/:projectId/images/:imageId/featured
+ * Set an image as featured - ADMIN ONLY
+ */
+router.patch('/projects/:projectId/images/:imageId/featured', isAdmin, async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.projectId);
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    // Unset all featured flags
+    project.images.forEach(img => img.isFeatured = false);
+
+    // Set new featured image
+    const image = project.images.id(req.params.imageId);
+    if (!image) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+
+    image.isFeatured = true;
+    await project.save();
+
+    res.json({ success: true, message: 'Featured image updated' });
+  } catch (error) {
+    console.error('Error setting featured image:', error);
+    res.status(500).json({ error: 'Error setting featured image' });
+  }
+});
+
+/**
+ * DELETE /admin/projects/:projectId/images/:imageId
+ * Delete an image from project - ADMIN ONLY
+ */
+router.delete('/projects/:projectId/images/:imageId', isAdmin, async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.projectId);
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    const image = project.images.id(req.params.imageId);
+    if (!image) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+
+    // Delete file from disk
+    const fs = require('fs');
+    const imagePath = path.join(__dirname, '../../../public', image.path);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    // Remove from database
+    image.deleteOne();
+    await project.save();
+
+    res.json({ success: true, message: 'Image deleted' });
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    res.status(500).json({ error: 'Error deleting image' });
   }
 });
 

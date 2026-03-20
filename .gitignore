@@ -32,3 +32,6 @@ build/
 
 # Coverage (if someone adds tests)
 coverage/
+
+# Logs
+logs/*.log

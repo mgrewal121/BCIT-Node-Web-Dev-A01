@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const { Category, Project } = require('../src/server/models');
+const { Category, Project, User } = require('../src/server/models');
 
 // Categories
 const categories = [
@@ -41,12 +41,12 @@ const getProjects = (categoryMap) => [
       {
         path: '/images/projects/vanilla-js-game/cover.png',
         alt: 'Neon Dodger title screen with a glowing player icon and score panel',
-        type: 'cover'
+        isFeatured: true
       },
       {
         path: '/images/projects/vanilla-js-game/gameplay.png',
         alt: 'Gameplay showing obstacles, score, and remaining lives',
-        type: 'screenshot'
+        isFeatured: false
       }
     ],
     dates: {
@@ -72,12 +72,12 @@ const getProjects = (categoryMap) => [
       {
         path: '/images/projects/react-movie-database/cover.png',
         alt: 'ReelFinder home page with a movie search bar and poster grid',
-        type: 'cover'
+        isFeatured: true
       },
       {
         path: '/images/projects/react-movie-database/details.png',
         alt: 'Movie detail page with poster, rating, cast list, and favorite button',
-        type: 'screenshot'
+        isFeatured: false
       }
     ],
     dates: {
@@ -103,12 +103,12 @@ const getProjects = (categoryMap) => [
       {
         path: '/images/projects/news-style-landing-page/cover.png',
         alt: 'Daily Byte landing page with hero headline and featured stories grid',
-        type: 'cover'
+        isFeatured: true
       },
       {
         path: '/images/projects/news-style-landing-page/mobile.png',
         alt: 'Mobile layout showing stacked story cards and a hamburger menu',
-        type: 'screenshot'
+        isFeatured: false
       }
     ],
     dates: {
@@ -134,12 +134,12 @@ const getProjects = (categoryMap) => [
       {
         path: '/images/projects/node-express-mongo-portfolio/cover.png',
         alt: 'Portfolio home showing project cards rendered from MongoDB data',
-        type: 'cover'
+        isFeatured: true
       },
       {
         path: '/images/projects/node-express-mongo-portfolio/admin.png',
         alt: 'Admin screen with project create/edit form and validation messages',
-        type: 'screenshot'
+        isFeatured: false
       }
     ],
     dates: {
@@ -165,12 +165,12 @@ const getProjects = (categoryMap) => [
       {
         path: '/images/projects/ecommerce-site/cover.png',
         alt: 'Cartonaut product grid with filters and a cart badge in the header',
-        type: 'cover'
+        isFeatured: true
       },
       {
         path: '/images/projects/ecommerce-site/cart.png',
         alt: 'Cart page with line items, quantity controls, and order summary',
-        type: 'screenshot'
+        isFeatured: false
       }
     ],
     dates: {
@@ -196,18 +196,40 @@ const getProjects = (categoryMap) => [
       {
         path: '/images/projects/devops-containerized-api/cover.png',
         alt: 'Terminal output showing docker compose running the API service',
-        type: 'cover'
+        isFeatured: true
       },
       {
         path: '/images/projects/devops-containerized-api/swagger.png',
         alt: 'API documentation page showing endpoints and example responses',
-        type: 'screenshot'
+        isFeatured: false
       }
     ],
     dates: {
       created: '2026-01-22',
       updated: '2026-01-29'
     }
+  }
+];
+
+// Test users (required by assignment)
+const testUsers = [
+  {
+    email: process.env.TEST_USER_EMAIL || 'user@test.com',
+    nickname: 'Test User',
+    passwordHash: process.env.TEST_USER_PASSWORD || 'testuser123',
+    role: 'USER'
+  },
+  {
+    email: process.env.TEST_MODERATOR_EMAIL || 'mod@test.com',
+    nickname: 'Test Moderator',
+    passwordHash: process.env.TEST_MODERATOR_PASSWORD || 'testmod123',
+    role: 'MODERATOR'
+  },
+  {
+    email: process.env.TEST_ADMIN_EMAIL || 'admin@test.com',
+    nickname: 'Test Admin',
+    passwordHash: process.env.TEST_ADMIN_PASSWORD || 'testadmin123',
+    role: 'ADMIN'
   }
 ];
 
@@ -220,13 +242,22 @@ async function seed() {
     // Clear existing data
     await Category.deleteMany({});
     await Project.deleteMany({});
+    await User.deleteMany({});
     console.log('Cleared existing data');
+
+    // Create test users ONE BY ONE (to trigger pre-save hook for password hashing)
+    const createdUsers = [];
+    for (const userData of testUsers) {
+      const user = await User.create(userData);
+      createdUsers.push(user);
+    }
+    console.log(`Created ${createdUsers.length} test users`);
 
     // Create categories
     const createdCategories = await Category.insertMany(categories);
     console.log(`Created ${createdCategories.length} categories`);
 
-    // Create a category map
+    // Create a map of slug -> ObjectId for easy reference
     const categoryMap = {};
     createdCategories.forEach(cat => {
       categoryMap[cat.slug] = cat._id;
@@ -237,15 +268,20 @@ async function seed() {
     const createdProjects = await Project.insertMany(projects);
     console.log(`Created ${createdProjects.length} projects`);
 
-    console.log('\n Database seeded successfully!');
+    console.log('\nDatabase seeded successfully!');
     console.log(`   Categories: ${createdCategories.length}`);
     console.log(`   Projects: ${createdProjects.length}`);
     console.log(`   Active projects: ${createdProjects.filter(p => p.isActive).length}`);
+    console.log(`   Users: ${createdUsers.length}`);
+    console.log('\nTest User Credentials:');
+    console.log(`   USER:      ${testUsers[0].email} / ${process.env.TEST_USER_PASSWORD || 'testuser123'}`);
+    console.log(`   MODERATOR: ${testUsers[1].email} / ${process.env.TEST_MODERATOR_PASSWORD || 'testmod123'}`);
+    console.log(`   ADMIN:     ${testUsers[2].email} / ${process.env.TEST_ADMIN_PASSWORD || 'testadmin123'}`);
 
     await mongoose.disconnect();
     process.exit(0);
   } catch (error) {
-    console.error('Seed error:', error);
+    console.error('✗ Seed error:', error);
     process.exit(1);
   }
 }

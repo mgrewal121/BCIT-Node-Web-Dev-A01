@@ -38,6 +38,7 @@
                     </td>
                     <td class="actions">
                         <a href="/projects/<%= project.slug %>" class="btn-small" target="_blank">View</a>
+                        <a href="/admin/projects/<%= project._id %>/images" class="btn-small">Images</a>  <!-- ✅ ADD THIS -->
                         <a href="/admin/projects/<%= project._id %>/edit" class="btn-small">Edit</a>
                         <button 
                             class="btn-small btn-danger delete-project" 
@@ -49,7 +50,7 @@
                 </tr>
             <% }); %>
         </tbody>
-    </table>
+        </table>
 <% } %>
 
 <script>

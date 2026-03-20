@@ -36,12 +36,23 @@
                         >
                             <%= contact.isRead ? 'Mark Unread' : 'Mark Read' %>
                         </button>
-                        <button 
-                            class="btn-small btn-danger delete-contact" 
-                            data-id="<%= contact._id %>"
-                        >
-                            Delete
-                        </button>
+                        
+                        <% if (currentUser && currentUser.role === 'ADMIN') { %>
+                            <button 
+                                class="btn-small btn-danger delete-contact" 
+                                data-id="<%= contact._id %>"
+                            >
+                                Delete
+                            </button>
+                        <% } else { %>
+                            <button 
+                                class="btn-small btn-danger" 
+                                disabled
+                                title="Admin access required"
+                            >
+                                Delete
+                            </button>
+                        <% } %>
                     </td>
                 </tr>
             <% }); %>
@@ -60,6 +71,9 @@ document.querySelectorAll('.toggle-read').forEach(btn => {
             });
             if (response.ok) {
                 location.reload();
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Error updating status');
             }
         } catch (error) {
             alert('Error updating status');
@@ -67,7 +81,7 @@ document.querySelectorAll('.toggle-read').forEach(btn => {
     });
 });
 
-// Delete contact
+// Delete contact (only for admins)
 document.querySelectorAll('.delete-contact').forEach(btn => {
     btn.addEventListener('click', async function() {
         if (!confirm('Delete this contact submission?')) return;
@@ -77,8 +91,12 @@ document.querySelectorAll('.delete-contact').forEach(btn => {
             const response = await fetch(`/admin/contacts/${id}`, {
                 method: 'DELETE'
             });
+            
             if (response.ok) {
                 location.reload();
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Error deleting contact');
             }
         } catch (error) {
             alert('Error deleting contact');

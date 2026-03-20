@@ -770,3 +770,374 @@ textarea {
         font-size: 1.75rem;
     }
 }
+
+/* ========================================
+   AUTH PAGES
+   ======================================== */
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 2rem;
+}
+
+.auth-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    width: 100%;
+}
+
+.auth-card h1 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #2c3e50;
+}
+
+.auth-form {
+    margin-bottom: 1.5rem;
+}
+
+.auth-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.auth-footer {
+    text-align: center;
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.auth-footer a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.btn-primary {
+    width: 100%;
+    background: #0066cc;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background: #004c99;
+}
+
+/* ========================================
+   IMAGE MANAGEMENT
+   ======================================== */
+
+.image-management {
+    max-width: 1200px;
+}
+
+.upload-section {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.upload-section h2 {
+    margin-top: 0;
+}
+
+.image-upload-form {
+    max-width: 600px;
+}
+
+.image-upload-form input[type="file"] {
+    padding: 0.5rem;
+    border: 2px dashed #ccc;
+    background: white;
+}
+
+#uploadStatus {
+    margin-top: 1rem;
+}
+
+.info-message {
+    background: #e3f2fd;
+    color: #0066cc;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.current-images h2 {
+    margin-bottom: 1.5rem;
+}
+
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.image-item {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.image-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.image-item.featured {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+}
+
+.image-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.image-info {
+    padding: 1rem;
+}
+
+.image-alt {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0 0 0.5rem 0;
+    min-height: 1.5rem;
+}
+
+.featured-badge {
+    display: inline-block;
+    background: #ffc107;
+    color: #000;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.image-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.image-actions .btn-small {
+    flex: 1;
+    text-align: center;
+    min-width: 100px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .images-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .image-actions {
+        flex-direction: column;
+    }
+    
+    .image-actions .btn-small {
+        width: 100%;
+    }
+}
+
+/* ========================================
+   NAVBAR AUTH
+   ======================================== */
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+}
+
+nav > a {
+    color: white;
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    display: block;
+    transition: background 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+nav > a:hover {
+    background: #34495e;
+    border-bottom-color: #3498db;
+}
+
+/* User Info Section */
+.nav-user-info {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1rem;
+}
+
+.user-nickname {
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-badge.admin {
+    background: #dc3545;
+    color: white;
+}
+
+.role-badge.moderator {
+    background: #ffc107;
+    color: #000;
+}
+
+.btn-login,
+.btn-logout {
+    color: white !important;
+    background: #0066cc;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s;
+    border-bottom: none !important;
+    margin-left: auto;
+}
+
+.btn-login:hover,
+.btn-logout:hover {
+    background: #004c99 !important;
+}
+
+.btn-logout {
+    background: #6c757d;
+}
+
+.btn-logout:hover {
+    background: #5a6268 !important;
+}
+
+/* Responsive Nav */
+@media (max-width: 968px) {
+    nav {
+        flex-wrap: wrap;
+    }
+    
+    .nav-user-info {
+        width: 100%;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        background: #34495e;
+        border-top: 1px solid #2c3e50;
+    }
+}
+
+@media (max-width: 768px) {
+    nav > a {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 0.8rem 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .nav-user-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .user-nickname {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ========================================
+   PROJECT HERO & GALLERY
+   ======================================== */
+
+.project-hero {
+    margin: 2rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    display: block;
+}
+
+.project-gallery {
+    margin: 3rem 0;
+}
+
+.project-gallery h3 {
+    margin-bottom: 1.5rem;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.gallery-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.gallery-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .hero-image {
+        max-height: 300px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,15 @@
+<div style="text-align: center; padding: 50px;">
+    <h1>403 - Forbidden</h1>
+    <p><%= message || 'You do not have permission to access this resource.' %></p>
+    
+    <% if (currentUser) { %>
+        <p>You are logged in as: <strong><%= currentUser.nickname %></strong> (<%= currentUser.role %>)</p>
+    <% } %>
+    
+    <div style="margin-top: 30px;">
+        <a href="/" class="btn">Go Home</a>
+        <% if (currentUser && (currentUser.role === 'MODERATOR' || currentUser.role === 'ADMIN')) { %>
+            <a href="/admin" class="btn">Go to Admin</a>
+        <% } %>
+    </div>
+</div>
